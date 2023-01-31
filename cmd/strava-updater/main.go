@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 
@@ -14,12 +13,19 @@ var service = strava.NewCurrentAthleteService(client)
 var newActivityService = strava.NewActivitiesService(client)
 
 func main() {
-	activityId := _getLatestRunningActivityId()
+	times := _getLapsForRun()
+	fmt.Println(times)
+}
 
-	// returns a slice of LapEffortSummary objects
-	laps, _ := newActivityService.ListLaps(activityId).Do()
-	lapJson, _ := json.Marshal((laps))
-	fmt.Printf(string(lapJson))
+func _getLapsForRun() []string {
+	laps := []string{}
+	activityId := _getLatestRunningActivityId()
+	runs, _ := newActivityService.ListLaps(activityId).Do()
+
+	for _, lap := range runs {
+		laps = append(laps, _secondsToMinutes(lap.ElapsedTime))
+	}
+	return laps
 }
 
 func _getLatestRunningActivityId() int64 {
@@ -33,4 +39,11 @@ func _getLatestRunningActivityId() int64 {
 	}
 
 	return runs[0].Id
+}
+
+func _secondsToMinutes(inSeconds int) string {
+	minutes := inSeconds / 60
+	seconds := inSeconds % 60
+	str := fmt.Sprint(minutes, ":", seconds)
+	return str
 }
