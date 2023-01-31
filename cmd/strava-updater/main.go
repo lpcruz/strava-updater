@@ -11,13 +11,18 @@ import (
 var token = os.Getenv("STRAVA_ACCESS_TOKEN")
 var client = strava.NewClient(token)
 var service = strava.NewCurrentAthleteService(client)
+var newActivityService = strava.NewActivitiesService(client)
 
 func main() {
-	activities := _getLatestRunningActivity()
-	fmt.Printf(activities)
+	activityId := _getLatestRunningActivityId()
+
+	// returns a slice of LapEffortSummary objects
+	laps, _ := newActivityService.ListLaps(activityId).Do()
+	lapJson, _ := json.Marshal((laps))
+	fmt.Printf(string(lapJson))
 }
 
-func _getLatestRunningActivity() string {
+func _getLatestRunningActivityId() int64 {
 	runs := []*strava.ActivitySummary{}
 	activities, _ := service.ListActivities().Page(1).Do()
 
@@ -27,10 +32,5 @@ func _getLatestRunningActivity() string {
 		}
 	}
 
-	activitiesJson, err := json.Marshal(runs[0])
-	if err != nil {
-		fmt.Println("Error", err)
-		os.Exit((1))
-	}
-	return string(activitiesJson)
+	return runs[0].Id
 }
