@@ -30,7 +30,11 @@ func _getLapsForRun() []string {
 
 func _getLatestRunningActivityId() int64 {
 	runs := []*strava.ActivitySummary{}
-	activities, _ := service.ListActivities().Page(1).Do()
+	activities, err := service.ListActivities().Page(1).Do()
+
+	if err != nil {
+		fmt.Println("Something went wrong", err)
+	}
 
 	for _, activity := range activities {
 		if activity.Type == "Run" {
