@@ -8,5 +8,6 @@ Make my strava posts a little more interesting.
 
 - [x] Get splits for running activities
 - [x] Ability to update running descriptions with splits
-- [ ] Figure out logic to accommodate Strava's [Oauth](https://developers.strava.com/docs/authentication/) mechanism
+- [ ] Figure out logic to accommodate Strava's [Oauth](https://developers.strava.com/docs/authentication/) mechanism without manual intervention
+- [ ] Implement Reddit API to programmatically get OTF workouts
 - [ ] Deploy as a K8s CronJob to AWS using Terraform
