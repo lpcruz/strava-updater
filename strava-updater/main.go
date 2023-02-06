@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"math"
+	"strconv"
 
 	strava "github.com/strava/go.strava"
 )
@@ -17,9 +19,10 @@ var appName = "https://github.com/lpcruz/strava-updater"
 func main() {
 	activityId := _getLatestRunningActivityId()
 	laps := _getLapsForRun(activityId)
-	description := "splits:\n" + strings.Join(laps,", ") + " - via " + appName
+	averageHeartRate := _getHeartRate(activityId)
+	description := "❤️ avg HR: " + strconv.FormatFloat(math.Round(averageHeartRate), 'g', 5, 64) + " bpm\n⏱️ splits: " + strings.Join(laps,", ") + " - via " + appName
 	newActivityService.Update(activityId).Description(description).Do()
-	fmt.Printf("Update description: " + description)
+	fmt.Printf(description)
 }
 
 func _getLapsForRun(activityId int64) []string {
@@ -30,6 +33,11 @@ func _getLapsForRun(activityId int64) []string {
 		laps = append(laps, _secondsToMinutes(lap.ElapsedTime))
 	}
 	return laps
+}
+
+func _getHeartRate(activityId int64) float64 {
+	activity, _ := newActivityService.Get(activityId).IncludeAllEfforts().Do()
+	return activity.AverageHeartrate
 }
 
 func _getLatestRunningActivityId() int64 {
