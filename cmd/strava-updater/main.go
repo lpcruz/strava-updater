@@ -26,8 +26,8 @@ func _getLapsForRun(activityId int64) []string {
 	laps := []string{}
 	runs, _ := newActivityService.ListLaps(activityId).Do()
 
-	for i, lap := range runs {
-		laps = append(laps, _secondsToMinutes(lap.ElapsedTime, i))
+	for _, lap := range runs {
+		laps = append(laps, _secondsToMinutes(lap.ElapsedTime))
 	}
 	return laps
 }
@@ -49,9 +49,9 @@ func _getLatestRunningActivityId() int64 {
 	return runs[0].Id
 }
 
-func _secondsToMinutes(inSeconds int, idx int) string {
+func _secondsToMinutes(inSeconds int) string {
 	minutes := inSeconds / 60
 	seconds := inSeconds % 60
-	str := fmt.Sprint(idx+1,". ",minutes, ":", seconds)
+	str := fmt.Sprint(minutes, ":", seconds)
 	return str
 }
