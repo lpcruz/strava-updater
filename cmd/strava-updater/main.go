@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	strava "github.com/strava/go.strava"
 )
@@ -11,19 +12,22 @@ var token = os.Getenv("STRAVA_ACCESS_TOKEN")
 var client = strava.NewClient(token)
 var service = strava.NewCurrentAthleteService(client)
 var newActivityService = strava.NewActivitiesService(client)
+var appName = "https://github.com/lpcruz/strava-updater"
 
 func main() {
-	times := _getLapsForRun()
-	fmt.Println(times)
+	activityId := _getLatestRunningActivityId()
+	laps := _getLapsForRun(activityId)
+	description := "splits:\n" + strings.Join(laps,", ") + " - via " + appName
+	newActivityService.Update(activityId).Description(description).Do()
+	fmt.Printf("Update description: " + description)
 }
 
-func _getLapsForRun() []string {
+func _getLapsForRun(activityId int64) []string {
 	laps := []string{}
-	activityId := _getLatestRunningActivityId()
 	runs, _ := newActivityService.ListLaps(activityId).Do()
 
-	for _, lap := range runs {
-		laps = append(laps, _secondsToMinutes(lap.ElapsedTime))
+	for i, lap := range runs {
+		laps = append(laps, _secondsToMinutes(lap.ElapsedTime, i))
 	}
 	return laps
 }
@@ -45,9 +49,9 @@ func _getLatestRunningActivityId() int64 {
 	return runs[0].Id
 }
 
-func _secondsToMinutes(inSeconds int) string {
+func _secondsToMinutes(inSeconds int, idx int) string {
 	minutes := inSeconds / 60
 	seconds := inSeconds % 60
-	str := fmt.Sprint(minutes, ":", seconds)
+	str := fmt.Sprint(idx+1,". ",minutes, ":", seconds)
 	return str
 }
