@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"strings"
 	"math"
+	"os"
 	"strconv"
+	"strings"
 
 	strava "github.com/strava/go.strava"
 )
@@ -20,7 +20,7 @@ func main() {
 	activityId := _getLatestRunningActivityId()
 	laps := _getLapsForRun(activityId)
 	averageHeartRate := _getHeartRate(activityId)
-	description := "❤️ avg HR: " + strconv.FormatFloat(math.Round(averageHeartRate), 'g', 5, 64) + " bpm\n⏱️ splits: " + strings.Join(laps,", ") + " - via " + appName
+	description := "❤️ avg HR: " + strconv.FormatFloat(math.Round(averageHeartRate), 'g', 5, 64) + " bpm\n⏱️ splits: " + strings.Join(laps, ", ") + " - via " + appName
 	newActivityService.Update(activityId).Description(description).Do()
 	fmt.Printf(description)
 }
