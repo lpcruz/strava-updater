@@ -49,7 +49,7 @@ func _getLatestRunningActivityId() int64 {
 	}
 
 	for _, activity := range activities {
-		if activity.Type == "Run" {
+		if activity.Type == "Run" || activity.Type == "VirtualRun" {
 			runs = append(runs, activity)
 		}
 	}
