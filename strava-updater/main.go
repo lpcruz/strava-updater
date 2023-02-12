@@ -11,10 +11,10 @@ import (
 )
 
 var token = os.Getenv("STRAVA_ACCESS_TOKEN")
+var appName = os.Getenv("APP_NAME")
 var client = strava.NewClient(token)
 var service = strava.NewCurrentAthleteService(client)
 var newActivityService = strava.NewActivitiesService(client)
-var appName = "https://github.com/lpcruz/strava-updater"
 
 func main() {
 	activityId := _getLatestRunningActivityId()

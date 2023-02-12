@@ -21,7 +21,7 @@ fmt:
 	gofmt -s -w ${SRC}
 
 strava-update:
-	STRAVA_ACCESS_TOKEN=${STRAVA_ACCESS_TOKEN} go run strava-updater/main.go
+	STRAVA_ACCESS_TOKEN=${STRAVA_ACCESS_TOKEN} APP_NAME=${APP_NAME} go run strava-updater/main.go
 
 strava-get-access-token:
 	curl -X POST https://www.strava.com/oauth/token \
