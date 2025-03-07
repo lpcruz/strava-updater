@@ -31,3 +31,18 @@ strava-get-access-token:
         -F grant_type=authorization_code > oauth_response.json
 	$(parse_access_token)
 
+
+open-strava-auth:
+	@if [ -z "$(CLIENT_ID)" ]; then \
+		echo "ERROR: client_id is not set. Please provide it like: make open-strava-auth client_id=YOUR_CLIENT_ID"; \
+		exit 1; \
+	fi
+	@URL="https://www.strava.com/oauth/authorize?client_id=$(CLIENT_ID)&response_type=code&redirect_uri=http://localhost&approval_prompt=force&scope=read,activity:write,activity:read"; \
+	echo "Opening: $$URL"; \
+	if command -v xdg-open >/dev/null; then \
+		xdg-open "$$URL"; \
+	elif command -v open >/dev/null; then \
+		open "$$URL"; \
+	else \
+		echo "No known browser open command found (xdg-open or open). Please open manually: $$URL"; \
+	fi
